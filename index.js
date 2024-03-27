@@ -19,6 +19,15 @@ app.post('/api/users', (req,res) =>{
 
   let uname = req.body.username
 
+  for (const temp_idx in d){
+    if (d[temp_idx]['username']==uname){
+      res.json({
+        username: uname,
+        _id: temp_idx
+      })
+    }
+  }
+
   let idx = Object.keys(d).length
 
   d[idx] = {
@@ -88,7 +97,7 @@ app.get('/api/users/:_id/logs', (req, res)=>{
   let idx = req.params._id
   let from = Date.parse(req.query.from)
   let to = Date.parse(req.query.to)
-  let limit = req.query.limit
+  let limit = Number(req.query.limit)
 
   if (!from){
     from = Date.parse(new Date(0).toDateString())
@@ -113,7 +122,12 @@ app.get('/api/users/:_id/logs', (req, res)=>{
 
   })
 
-  res.status(200).send(temp_candidates.slice(0, limit))
+  res.json({
+    _id: idx,
+    username: d[idx]['username'],
+    count: temp_candidates.slice(0, limit).length,
+    log: temp_candidates.slice(0, limit)
+  })
 
 })
 
